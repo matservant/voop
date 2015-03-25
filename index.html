@@ -3,7 +3,15 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Voop</title>  
+	<title>Voop</title> 
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #FFFFFF;
+      
+    }    
+  </style> 
 </head>
 <body>
 
@@ -16,9 +24,15 @@
   var recorder;
   var samples = [];  
   var circles = [];  
-  var gap = 30;
+  var gap = 15;
   var canRec = true;
   var isRec = false;
+  var tints = [
+    0xFF0000,
+    0x00FF00,
+    0xFF00FF,
+    0x0000FF
+  ]
 
   window.onmousedown = function(event) {   
 
@@ -42,7 +56,8 @@
             isRec = true;    
 
             //200 is to avoid overlap of samples, as the stop is not immediate
-            setTimeout(function() {startRecording()}, 200);                          
+            //setTimeout(function() {startRecording()}, 200);                          
+            startRecording();                          
           }
 
           console.log("press");
@@ -59,37 +74,53 @@
   }
 
 
-  var stage = new PIXI.Stage(0x66FF99);
-  var renderer = new PIXI.WebGLRenderer(500, 600);//autoDetectRenderer(400, 300);
+  var stage = new PIXI.Stage(0xFFFFFF);
+  var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, null);
   
   document.body.appendChild(renderer.view);
 
   requestAnimFrame( animate );
 
-  var texture = PIXI.Texture.fromImage("circle.png");  
+  var texture = PIXI.Texture.fromImage("dot.png");  
 
   var timelineTxt = PIXI.Texture.fromImage("timeline.png");
   var timelineTop = new PIXI.Sprite(timelineTxt);
+  var timelineBot = new PIXI.Sprite(timelineTxt);
   
   timelineTop.position.x = 0;
   timelineTop.position.y = 30;
+
+  timelineBot.position.x = 0;
+  timelineBot.position.y = window.innerHeight - 30;
   
   stage.addChild(timelineTop);
+  stage.addChild(timelineBot);
 
   function animate() {
       requestAnimFrame( animate );   
 
-      timelineTop.x += 3;
+      timelineTop.x += 5;
+      timelineBot.x += 5;
 
       if(timelineTop.x > renderer.width) {
         timelineTop.x = 0;
+        timelineBot.x = 0;
       }
 
       for (var i=0; i < circles.length; i++) {
         var circle = circles[i];
+
+        circle.scale.x += (circle.scaleDx - circle.scale.x) * 0.1;
+        circle.scale.y += (circle.scaleDy - circle.scale.y) * 0.1;
+
+        if(circle.scale.x > 1.4) {
+          circle.deBounce();
+        }
+
         if(timelineTop.x < (circle.x + gap) && timelineTop.x > (circle.x - gap)) {
           if (isRec == false) {
             samples[i].play();
+            circle.bounce();                                    
           }
         }
       }
@@ -105,8 +136,24 @@
     circle.position.x = x;
     circle.position.y = y;
 
+    circle.scaleDx = 1;
+    circle.scaleDy = 1;
+
     circle.interactive = true;
     circle.buttonMode = true;
+
+    var tint = tints[Math.floor(Math.random()*tints.length)];
+    circle.tint = tint;
+
+    circle.bounce = function() {
+      this.scaleDx = 1.5;
+      this.scaleDy = 1.5;      
+    }    
+
+    circle.deBounce = function() {
+      this.scaleDx = 1;
+      this.scaleDy = 1;      
+    }    
 
     circle.mousedown = circle.touchstart = function(data)
     {
