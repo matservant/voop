@@ -2,7 +2,7 @@
 
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">  
 	<title>Voop</title> 
   <style>
     body {
@@ -15,6 +15,8 @@
 </head>
 <body>
 
+  <input type="range" min="0" max="5" value="5" oninput="setSpeed(value)" onchange="setSpeed(value)">
+
   <script src="recorder.js"></script>
   <script src="pixi.js"></script>
 
@@ -24,6 +26,7 @@
   var recorder;
   var samples = [];  
   var circles = [];  
+  var speed = 5;  
   var gap = 15;
   var canRec = true;
   var isRec = false;
@@ -42,7 +45,7 @@
           //check that is not dragging a circle
           for (var i=0; i < circles.length; i++) {
             var circle = circles[i];
-            if(event.x < (circle.x + gap) && event.x > (circle.x - gap) && event.y < (circle.y + gap) && event.y > (circle.y - gap)) {
+            if(event.x < (circle.x + gap) && event.x > (circle.x - gap) && event.y < (circle.y + gap) && event.y > (circle.y - gap)) {              
               canRec = false;              
             }
           }          
@@ -99,8 +102,8 @@
   function animate() {
       requestAnimFrame( animate );   
 
-      timelineTop.x += 5;
-      timelineBot.x += 5;
+      timelineTop.x += speed;
+      timelineBot.x += speed;
 
       if(timelineTop.x > renderer.width) {
         timelineTop.x = 0;
@@ -185,6 +188,11 @@
 
     stage.addChild(circle);
     circles.push(circle);
+  }
+
+  function setSpeed(val) {
+    speed = val;
+    console.log(speed);
   }
 
   function startUserMedia(stream) {
