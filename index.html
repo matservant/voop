@@ -15,7 +15,7 @@
 </head>
 <body>
 
-  <input type="range" min="0" max="5" value="5" oninput="setSpeed(value)" onchange="setSpeed(value)">
+  <!--<input type="range" min="0" max="5" value="5" oninput="setSpeed(value)" onchange="setSpeed(value)">-->
 
   <script src="recorder.js"></script>
   <script src="pixi.js"></script>
@@ -51,8 +51,12 @@ document.addEventListener('mousemove', function(e){
       var circle = circles[i];
       if(circle.isInside(event.x, event.y)) {
         console.log("duplicazzo!");
-        var sample = samples[i];
-        samples.push(sample);
+
+        var au = document.createElement('audio');      	      
+	    au.controls = false;
+    	au.src = samples[i].src;      	
+      	samples.push(au);      
+        
         var newCircle = createCircle(event.x, event.y, circle.tint);
         newCircle.isDuplicated = true;
         pushCircle(newCircle);
@@ -107,6 +111,7 @@ document.addEventListener('mousemove', function(e){
           }
           
           canRec = true;
+          isRec = false;
           console.log("release");          
   }
 
@@ -195,7 +200,7 @@ document.addEventListener('mousemove', function(e){
     
     circle.isInside = function(x, y) {
       var b = false;
-      if (x < (circle.x + gap) && x > (circle.x - gap) && y < (y + gap) && event.y > (y - gap)) {
+      if (x < (circle.x + gap) && x > (circle.x - gap) && y < (circle.y + gap) && y > (circle.y - gap)) {
         b = true;
       }  
       return b;
