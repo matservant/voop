@@ -8,8 +8,7 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #FFFFFF;
-      
+      background-color: #FFFFFF;      
     }    
   </style> 
 </head>
@@ -27,14 +26,19 @@
   var samples = [];  
   var circles = [];  
   var speed = 5;  
-  var gap = 15;
+  var halfCircle = 20;
   var canRec = true;
   var isRec = false;
   var tints = [
-    0xFF0000,
-    0x00FF00,
-    0xFF00FF,
-    0x0000FF
+    0xFAD089,
+    0xFF9C5B,
+    0xF5634A,
+    0xED303C,
+    0xCFF09E,
+    0xA8DBA8,
+    0x79BD9A,
+    0x0A486B,
+    0x3B8183
   ];
   var mouse = {x: 0, y: 0};
 
@@ -67,6 +71,7 @@ document.addEventListener('mousemove', function(e){
     return false;
 }, false);
 
+  //left click
   window.onmousedown = function(event) {   
 
           isRec = false;
@@ -96,6 +101,7 @@ document.addEventListener('mousemove', function(e){
           console.log("press");
   }
 
+  //left released
   window.onmouseup = function(event) {
     
           if (isRec) {
@@ -103,6 +109,7 @@ document.addEventListener('mousemove', function(e){
             stopRecording();
             var tint = tints[Math.floor(Math.random()*tints.length)];
             var circle = createCircle(event.x, event.y, tint);
+            circle.bounce();
             pushCircle(circle);
           }
           
@@ -123,17 +130,23 @@ document.addEventListener('mousemove', function(e){
 
   requestAnimFrame( animate );
 
-  var texture = PIXI.Texture.fromImage("dot.png");  
+  var texture = PIXI.Texture.fromImage("dot.png");   
 
   var timelineTxt = PIXI.Texture.fromImage("timeline.png");
   var timelineTop = new PIXI.Sprite(timelineTxt);
   var timelineBot = new PIXI.Sprite(timelineTxt);
   
+  timelineTop.anchor.x = 0.5;
+  timelineTop.anchor.y = 0;
+
   timelineTop.position.x = 0;
-  timelineTop.position.y = 30;
+  timelineTop.position.y = 0;  
+
+  timelineBot.anchor.x = 0.5;
+  timelineBot.anchor.y = 1;
 
   timelineBot.position.x = 0;
-  timelineBot.position.y = window.innerHeight - 30;
+  timelineBot.position.y = window.innerHeight;  
   
   stage.addChild(timelineTop);
   stage.addChild(timelineBot);
@@ -155,7 +168,7 @@ document.addEventListener('mousemove', function(e){
         circle.scale.x += (circle.scaleDx - circle.scale.x) * 0.1;
         circle.scale.y += (circle.scaleDy - circle.scale.y) * 0.1;
 
-        if(circle.scale.x > 1.4) {
+        if(circle.scale.x > 0.58) {
           circle.deBounce();
         }
         
@@ -166,7 +179,7 @@ document.addEventListener('mousemove', function(e){
           this.dragging = true;
         }
 
-        if(timelineTop.x < (circle.x + gap) && timelineTop.x > (circle.x - gap)) {
+        if(timelineTop.x < (circle.x + halfCircle) && timelineTop.x > (circle.x - halfCircle)) {
           if (isRec == false) {
             samples[i].play();
             circle.bounce();                                    
@@ -183,13 +196,13 @@ document.addEventListener('mousemove', function(e){
     circle.anchor.x = 0.5;
     circle.anchor.y = 0.5;
     circle.position.x = x;
-    circle.position.y = y;
+    circle.position.y = y;    
 
     circle.scale.x = 0.1;
     circle.scale.y = 0.1;
 
-    circle.scaleDx = 1;
-    circle.scaleDy = 1;
+    circle.scaleDx = 0.5;
+    circle.scaleDy = 0.5;
 
     circle.interactive = true;
     circle.buttonMode = true;
@@ -200,20 +213,20 @@ document.addEventListener('mousemove', function(e){
     
     circle.isInside = function(x, y) {
       var b = false;
-      if (x < (circle.x + gap) && x > (circle.x - gap) && y < (circle.y + gap) && y > (circle.y - gap)) {
+      if (x < (circle.x + halfCircle) && x > (circle.x - halfCircle) && y < (circle.y + halfCircle) && y > (circle.y - halfCircle)) {
         b = true;
       }  
       return b;
     }
 
     circle.bounce = function() {
-      this.scaleDx = 1.5;
-      this.scaleDy = 1.5;      
+      this.scaleDx = 0.6;
+      this.scaleDy = 0.6;      
     }    
 
     circle.deBounce = function() {
-      this.scaleDx = 1;
-      this.scaleDy = 1;      
+      this.scaleDx = 0.5;
+      this.scaleDy = 0.5;      
     }    
 
     circle.mousedown = circle.touchstart = function(data)
