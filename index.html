@@ -8,13 +8,33 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #FFFFFF;      
-    }    
+      background-color: #78C0A8;      
+    }  
+
+    button {
+    	background: #78C0A8;
+    	border: 2px solid white;
+    	outline: none;  
+    	color:white;
+    	font-size: 18px;  	
+    } 
+
+    #controls {
+    	position: absolute;
+    	bottom:0;
+    	width: 100%;
+    	height: 80px;
+    } 	 
+
   </style> 
 </head>
 <body>
 
-  <!--<input type="range" min="0" max="5" value="5" oninput="setSpeed(value)" onchange="setSpeed(value)">-->
+  <!--<input type="range" min="0" max="5" value="5" oninput="setSpeed(	value)" onchange="setSpeed(value)">-->
+
+  <div id="controls">  	
+  	<button onclick="aFreshStart()">●</button>
+  </div>
 
   <script src="recorder.js"></script>
   <script src="pixi.js"></script>
@@ -29,6 +49,7 @@
   var halfCircle = 20;
   var canRec = true;
   var isRec = false;
+  var controlsHeight = 80;
   var tints = [
     0xFAD089,
     0xFF9C5B,
@@ -40,6 +61,7 @@
     0x0A486B,
     0x3B8183
   ];
+  var tintCount = 0;
   var mouse = {x: 0, y: 0};
 
 document.addEventListener('mousemove', function(e){ 
@@ -107,7 +129,8 @@ document.addEventListener('mousemove', function(e){
           if (isRec) {
             console.log("isrec: " + isRec);
             stopRecording();
-            var tint = tints[Math.floor(Math.random()*tints.length)];
+            var tint = tints[tintCount % tints.length];
+            tintCount++;
             var circle = createCircle(event.x, event.y, tint);
             circle.bounce();
             pushCircle(circle);
@@ -124,7 +147,7 @@ document.addEventListener('mousemove', function(e){
 
 
   var stage = new PIXI.Stage(0xFFFFFF);
-  var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, null);
+  var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight - controlsHeight, null);
   
   document.body.appendChild(renderer.view);
 
@@ -146,7 +169,7 @@ document.addEventListener('mousemove', function(e){
   timelineBot.anchor.y = 1;
 
   timelineBot.position.x = 0;
-  timelineBot.position.y = window.innerHeight;  
+  timelineBot.position.y = renderer.height;  
   
   stage.addChild(timelineTop);
   stage.addChild(timelineBot);
@@ -263,6 +286,14 @@ document.addEventListener('mousemove', function(e){
   function pushCircle(circle) {
     stage.addChild(circle);
     circles.push(circle);
+  }
+
+  function aFreshStart() {
+  	for(var i=0; i<circles.length; i++) {
+  		stage.removeChild(circles[i]);
+  	}  	
+  	samples.length = 0;
+  	circles.length = 0;
   }
 
   function setSpeed(val) {
