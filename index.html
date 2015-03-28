@@ -5,19 +5,53 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">  
 	<title>Voop</title> 
   <style>
+    @font-face {
+      font-family: 'icons';
+      src:url('fonts/icons.eot');
+      src:url('fonts/icons.eot') format('embedded-opentype'),
+        url('fonts/icons.woff') format('woff'),
+        url('fonts/icons.ttf') format('truetype'),
+        url('fonts/icons.svg') format('svg');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'monosten';
+      src:url('fonts/monosten-a-webfont.eot');
+      src:url('fonts/monosten-a-webfont.eot') format('embedded-opentype'),
+        url('fonts/monosten-a-webfont.woff') format('woff'),
+        url('fonts/monosten-a-webfont.ttf') format('truetype'),
+        url('fonts/monosten-a-webfont.svg') format('svg');
+      font-weight: normal;
+      font-style: normal;
+    }    
+
     body {
       margin: 0;
       padding: 0;
-      background-color: #78C0A8;      
+      background-color: #78C0A8;            
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }  
 
     button {
-    	background: #78C0A8;
-    	border: 2px solid white;
-    	outline: none;  
-    	color:white;
-    	font-size: 18px;  	
+    	  background: white;
+        outline: none;
+        color: #78C0A8;
+        font-size: 18px;
+        border: 0;
+        padding: 10px;
+        border-radius: 20px;
+        font-family: 'icons';     
+        margin-right: 17px;
     } 
+
+    a {
+      color: white;
+      text-decoration: none;
+      border-bottom: 2px solid white;
+    }
 
     #controls {
     	position: absolute;
@@ -26,14 +60,46 @@
     	height: 80px;
     } 	 
 
+    #buttons {
+      margin: 20px;
+      display: inline-block;
+    }
+
+    #belzebu {
+      font-family: 'monosten';
+      color: white;      
+      display: inline-block;
+      float: right;
+      margin: 30px;
+    }
+
+    .delete:before {         
+      content: "\e605";
+    }
+
+    .vertical-snap:before {         
+      content: "\e601";
+    }
+
+    .horizontal-snap:before {         
+      content: "\e602";
+    }
+
   </style> 
 </head>
 <body>
 
   <!--<input type="range" min="0" max="5" value="5" oninput="setSpeed(	value)" onchange="setSpeed(value)">-->
 
-  <div id="controls">  	
-  	<button onclick="aFreshStart()">●</button>
+  <div id="controls">  
+    <div id="buttons">
+  	 <button class="delete" onclick="aFreshStart()"></button>
+     <button class="vertical-snap" onclick="aFreshStart()"></button>
+     <button class="horizontal-snap" onclick="aFreshStart()"></button>
+    </div>  
+    <div id="belzebu">
+      voop by <a href="http://matlo.me">matlo</a>
+    </div>
   </div>
 
   <script src="recorder.js"></script>
@@ -78,23 +144,25 @@ document.addEventListener('mousemove', function(e){
   
   //right click event
   window.addEventListener('contextmenu', function(event) {
-    event.preventDefault();
-    
-    for (var i=0; i < circles.length; i++) {
-      var circle = circles[i];
-      if(circle.isInside(event.x, event.y)) {
-        console.log("duplicazzo!");
+    if(isInCanvas(event.y)) {
 
-        var au = document.createElement('audio');      	      
-	    au.controls = false;
-    	au.src = samples[i].src;      	
-      	samples.push(au);      
-        
-        var newCircle = createCircle(event.x, event.y, circle.tint);
-        newCircle.isDuplicated = true;
-        pushCircle(newCircle);
-        break;
-      }    
+      event.preventDefault();    
+      for (var i=0; i < circles.length; i++) {
+        var circle = circles[i];
+        if(circle.isInside(event.x, event.y)) {
+          console.log("duplicazzo!");
+
+          var au = document.createElement('audio');      	      
+  	    au.controls = false;
+      	au.src = samples[i].src;      	
+        	samples.push(au);      
+          
+          var newCircle = createCircle(event.x, event.y, circle.tint);
+          newCircle.isDuplicated = true;
+          pushCircle(newCircle);
+          break;
+        }    
+      }
     }
     
     return false;
@@ -103,53 +171,57 @@ document.addEventListener('mousemove', function(e){
   //left click
   window.onmousedown = function(event) {   
 
-          isRec = false;
+          if(isInCanvas(event.y)) {
+            isRec = false;
 
-          //check that is not dragging a circle
-          for (var i=0; i < circles.length; i++) {
-            var circle = circles[i];
-            if(circle.isInside(event.x, event.y)) {              
-              canRec = false;    
-              console.log("inside my body");
+            //check that is not dragging a circle
+            for (var i=0; i < circles.length; i++) {
+              var circle = circles[i];
+              if(circle.isInside(event.x, event.y)) {              
+                canRec = false;    
+                console.log("inside my body");
+              }
+            }          
+
+            if(canRec) {  
+              //stop playback while recording
+              for (var i=0; i < samples.length; i++) {    
+                samples[i].pause();
+                samples[i].currentTime = 0;
+              }                
+              isRec = true;    
+
+              //200 is to avoid overlap of samples, as the stop is not immediate
+              //setTimeout(function() {startRecording()}, 200);                          
+              startRecording();                          
             }
-          }          
 
-          if(canRec) {  
-            //stop playback while recording
-            for (var i=0; i < samples.length; i++) {    
-              samples[i].pause();
-              samples[i].currentTime = 0;
-            }                
-            isRec = true;    
-
-            //200 is to avoid overlap of samples, as the stop is not immediate
-            //setTimeout(function() {startRecording()}, 200);                          
-            startRecording();                          
+            console.log("press");
           }
-
-          console.log("press");
   }
 
   //left released
   window.onmouseup = function(event) {
-    
-          if (isRec) {
-            console.log("isrec: " + isRec);
-            stopRecording();
-            var tint = tints[tintCount % tints.length];
-            tintCount++;
-            var circle = createCircle(event.x, event.y, tint);
-            circle.bounce();
-            pushCircle(circle);
-          }
           
-          for(var i=0; i < circles.length; i++) {
-            circles[i].isDuplicated = false;
-          }
-          
-          canRec = true;
-          isRec = false;
-          console.log("release");          
+          if(isInCanvas(event.y)){
+            if (isRec) {
+              console.log("isrec: " + isRec);
+              stopRecording();
+              var tint = tints[tintCount % tints.length];
+              tintCount++;
+              var circle = createCircle(event.x, event.y, tint);
+              circle.bounce();
+              pushCircle(circle);
+            }
+            
+            for(var i=0; i < circles.length; i++) {
+              circles[i].isDuplicated = false;
+            }
+            
+            canRec = true;
+            isRec = false;
+            console.log("release");  
+          }        
   }
 
 
@@ -301,6 +373,14 @@ document.addEventListener('mousemove', function(e){
   	}  	
   	samples.length = 0;
   	circles.length = 0;
+  }
+
+  function isInCanvas(y) {
+    var b = false;
+    if(y < window.innerHeight - controlsHeight) {
+      b = true;
+    }
+    return b;
   }
 
   function setSpeed(val) {
