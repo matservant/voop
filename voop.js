@@ -1,10 +1,4 @@
-/*
-
-	WHEN CLICKING RESET IT ALSO CREATES A NEW FUCKIN CIRCLE
-
-*/
-
-
+  var debug = false;
   var audio_context;
   var recorder;
   var samples = [];  
@@ -25,7 +19,8 @@
     0x0A486B,
     0x3B8183
   ];
-  var tintCount = 0;
+  //start with a random tint
+  var tintCount = Math.floor(Math.random()*tints.length);  
   var mouse = {x: 0, y: 0};
 
 document.addEventListener('mousemove', function(e){ 
@@ -41,7 +36,10 @@ document.addEventListener('mousemove', function(e){
       for (var i=0; i < circles.length; i++) {
         var circle = circles[i];
         if(circle.isInside(event.x, event.y)) {
-          console.log("duplicazzo!");
+
+          if(debug) {
+            console.log("duplicazzo!");
+          }
 
           var au = document.createElement('audio');      	      
   	    au.controls = false;
@@ -59,7 +57,7 @@ document.addEventListener('mousemove', function(e){
     return false;
 }, false);
 
-  //left click
+  //left pressed
   window.onmousedown = function(event) {   
 
           if(isInCanvas(event.y)) {
@@ -69,8 +67,10 @@ document.addEventListener('mousemove', function(e){
             for (var i=0; i < circles.length; i++) {
               var circle = circles[i];
               if(circle.isInside(event.x, event.y)) {              
-                canRec = false;    
-                console.log("inside my body");
+                canRec = false;   
+                if(debug) { 
+                  console.log("inside my body");
+                }
               }
             }          
 
@@ -86,8 +86,9 @@ document.addEventListener('mousemove', function(e){
               //setTimeout(function() {startRecording()}, 200);                          
               startRecording();                          
             }
-
-            console.log("press");
+            if(debug) {
+              console.log("press");
+            }
           }
   }
 
@@ -96,7 +97,9 @@ document.addEventListener('mousemove', function(e){
           
           if(isInCanvas(event.y)){
             if (isRec) {
-              console.log("isrec: " + isRec);
+              if(debug) {
+                console.log("isrec: " + isRec);
+              }
               stopRecording();
               var tint = tints[tintCount % tints.length];
               tintCount++;
@@ -111,11 +114,13 @@ document.addEventListener('mousemove', function(e){
             
             canRec = true;
             isRec = false;
-            console.log("release");  
+            if(debug) {
+              console.log("release");  
+            }
           }        
   }
 
-
+  //pixi
   var stage = new PIXI.Stage(0xFFFFFF);
   var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight - controlsHeight, null);
   
@@ -183,6 +188,8 @@ document.addEventListener('mousemove', function(e){
       renderer.render(stage);
   }
 
+
+  //functions
   function createCircle(x, y, tint) {
     var circle = new PIXI.Sprite(texture);
     
@@ -279,16 +286,25 @@ document.addEventListener('mousemove', function(e){
     console.log(speed);
   }
 
+  //audio
   function startUserMedia(stream) {
     var input = audio_context.createMediaStreamSource(stream);
-    console.log('Media stream created.');
+
+    if (debug) {
+      console.log('Media stream created.');
+    }
 
     // Uncomment if you want the audio to feedback directly
     //input.connect(audio_context.destination);
-    console.log('Input connected to audio context destination.');
-    
+    if (debug) {
+      console.log('Input connected to audio context destination.');
+    }
+
     recorder = new Recorder(input);
-    console.log('Recorder initialised.');
+
+    if (debug) {
+      console.log('Recorder initialised.');
+    }
   }
 
   function startRecording() {    
@@ -338,7 +354,7 @@ document.addEventListener('mousemove', function(e){
       navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
       window.URL = window.URL || window.webkitURL;
       
-      audio_context = new AudioContext;
+      audio_context = new AudioContext;      
       console.log('Audio context set up.');
       console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
     } catch (e) {
