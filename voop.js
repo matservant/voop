@@ -14,6 +14,8 @@
   var hSnap = false;
   var vPortions = 7;
   var hPortions = 7;  
+  var vSnappers = [];
+  var hSnappers = [];
   var vSpace, hSpace;               
   var tints = [
     0xFAD089,
@@ -139,7 +141,9 @@ document.addEventListener('mousemove', function(e){
 
   requestAnimFrame( animate );
 
-  var texture = PIXI.Texture.fromImage("dot.png");   
+  var circleTexture = PIXI.Texture.fromImage("dot.png");   
+  var hSnapperTxt = PIXI.Texture.fromImage("hSnapperTxt.png");   
+  var vSnapperTxt = PIXI.Texture.fromImage("vSnapperTxt.png");   
 
   var timelineTxt = PIXI.Texture.fromImage("timeline.png");
   var timelineTop = new PIXI.Sprite(timelineTxt);
@@ -169,27 +173,7 @@ document.addEventListener('mousemove', function(e){
       if(timelineTop.x > renderer.width) {
         timelineTop.x = 0;
         timelineBot.x = 0;
-      }
-
-      if(vSnap) {         
-        for(var i=0; i<renderer.height; i+=vSpace) {
-          graphics.lineStyle(1, 0xCCCCCC);
-          graphics.moveTo(0,i);
-          graphics.lineTo(renderer.width, i);
-          graphics.endFill();
-          stage.addChild(graphics);
-        }
-      }
-
-      if(hSnap) {         
-        for(var i=0; i<renderer.width; i+=hSpace) {
-          graphics.lineStyle(1, 0xCCCCCC);
-          graphics.moveTo(i,0);
-          graphics.lineTo(i,renderer.height);
-          graphics.endFill();
-          stage.addChild(graphics);
-        }
-      }
+      }      
 
       for (var i=0; i < circles.length; i++) {
         var circle = circles[i];
@@ -224,13 +208,14 @@ document.addEventListener('mousemove', function(e){
         }
       }
 
+      //stage.children.sort(depthCompare);
       renderer.render(stage);
   }
 
 
   //functions
   function createCircle(x, y, tint) {
-    var circle = new PIXI.Sprite(texture);
+    var circle = new PIXI.Sprite(circleTexture);    
     
     circle.anchor.x = 0.5;
     circle.anchor.y = 0.5;
@@ -239,6 +224,8 @@ document.addEventListener('mousemove', function(e){
 
     circle.scale.x = 0.1;
     circle.scale.y = 0.1;
+
+    circle.z = 2;
 
     circle.scaleDx = 0.5;
     circle.scaleDy = 0.5;
@@ -326,13 +313,56 @@ document.addEventListener('mousemove', function(e){
   }
 
   function toggleVSnap() {
-    vSnap = !vSnap;
-    console.log("vSnap: " + vSnap);
+    vSnap = !vSnap;  
+
+    if(vSnap) {               
+        for(var i=0; i<renderer.height; i+=vSpace) {
+          var vSnapper = new PIXI.TilingSprite(vSnapperTxt, renderer.width, 1);
+           vSnapper.anchor.x = 0;
+           vSnapper.anchor.y = 0.5;
+           vSnapper.position.x = 0;
+           vSnapper.position.y = i;  
+           vSnapper.z = 1;
+          vSnappers.push(vSnapper);
+          stage.addChild(vSnapper);
+        }
+    } else {
+      for(var i=0; i<vSnappers.length; i++) {
+        stage.removeChild(vSnappers[i]);
+      }
+      vSnappers.length = 0;
+    }  
   }
 
   function toggleHSnap() {
     hSnap = !hSnap;
+
+    if(hSnap) {               
+        for(var i=0; i<renderer.width; i+=hSpace) {
+          var hSnapper = new PIXI.TilingSprite(hSnapperTxt, 1, renderer.height);
+           hSnapper.anchor.x = 0.5;
+           hSnapper.anchor.y = 0;
+           hSnapper.position.x = i;
+           hSnapper.position.y = 0;  
+           hSnapper.z = 1;
+          hSnappers.push(hSnapper);
+          stage.addChild(hSnapper);
+        }
+    } else {
+      for(var i=0; i<hSnappers.length; i++) {
+        stage.removeChild(hSnappers[i]);
+      }
+      hSnappers.length = 0;
+    }
   }  
+
+  function depthCompare(a,b) {
+    if (a.z < b.z)
+       return -1;
+    if (a.z > b.z)
+      return 1;
+    return 0;
+  }
 
   //audio
   function startUserMedia(stream) {
