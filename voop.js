@@ -314,7 +314,9 @@ document.addEventListener('mousemove', function(e){
 
   function toggleVSnap() {
     vSnap = !vSnap;  
-
+    document.getElementById('horizontal-snap').classList.toggle('untoggle');
+    document.getElementById('horizontal-snap').classList.toggle('toggle');
+    
     if(vSnap) {               
         for(var i=0; i<renderer.height; i+=vSpace) {
           var vSnapper = new PIXI.TilingSprite(vSnapperTxt, renderer.width, 1);
@@ -331,6 +333,8 @@ document.addEventListener('mousemove', function(e){
 
   function toggleHSnap() {
     hSnap = !hSnap;
+    document.getElementById('vertical-snap').classList.toggle('untoggle');
+    document.getElementById('vertical-snap').classList.toggle('toggle');
 
     if(hSnap) {               
         for(var i=0; i<renderer.width; i+=hSpace) {

@@ -33,11 +33,24 @@
         outline: none;
         color: #78C0A8;
         font-size: 18px;
-        border: 0;
-        padding: 10px;
+        border: 0;        
         border-radius: 20px;
         font-family: 'icons';     
         margin-right: 17px;
+    }     
+
+    .toggle {
+        background: #78C0A8;        
+        color: white;        
+        border: 3px solid white;    
+        padding: 7px;    
+    } 
+
+    .untoggle {
+        background: white;        
+        color: #78C0A8;        
+        border: 0;    
+        padding: 10px;    
     } 
 
     a {
@@ -66,14 +79,21 @@
       margin: 30px;
     }
 
-    .delete:before {         
+    #delete:before {         
       content: "\e605";
     }
 
-    .vertical-snap:before {         
+    #delete:active {
+        background: #78C0A8;        
+        color: white;        
+        border: 3px solid white;    
+        padding: 7px; 
+    }
+
+    #vertical-snap:before {         
       content: "\e601";
     }
 
-    .horizontal-snap:before {         
+    #horizontal-snap:before {         
       content: "\e602";
     }
