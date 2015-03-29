@@ -1,3 +1,5 @@
+  //DON'T USE GRAPHICS FOR LINES BUT TEXTURES
+
   var debug = false;
   var audio_context;
   var recorder;
@@ -8,6 +10,11 @@
   var canRec = true;
   var isRec = false;
   var controlsHeight = 80;
+  var vSnap = false;
+  var hSnap = false;
+  var vPortions = 7;
+  var hPortions = 7;  
+  var vSpace, hSpace;               
   var tints = [
     0xFAD089,
     0xFF9C5B,
@@ -123,6 +130,10 @@ document.addEventListener('mousemove', function(e){
   //pixi
   var stage = new PIXI.Stage(0xFFFFFF);
   var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight - controlsHeight, null);
+  var graphics = new PIXI.Graphics();
+
+  vSpace = renderer.height / vPortions;
+  hSpace = renderer.width / hPortions;
   
   document.body.appendChild(renderer.view);
 
@@ -158,6 +169,26 @@ document.addEventListener('mousemove', function(e){
       if(timelineTop.x > renderer.width) {
         timelineTop.x = 0;
         timelineBot.x = 0;
+      }
+
+      if(vSnap) {         
+        for(var i=0; i<renderer.height; i+=vSpace) {
+          graphics.lineStyle(1, 0xCCCCCC);
+          graphics.moveTo(0,i);
+          graphics.lineTo(renderer.width, i);
+          graphics.endFill();
+          stage.addChild(graphics);
+        }
+      }
+
+      if(hSnap) {         
+        for(var i=0; i<renderer.width; i+=hSpace) {
+          graphics.lineStyle(1, 0xCCCCCC);
+          graphics.moveTo(i,0);
+          graphics.lineTo(i,renderer.height);
+          graphics.endFill();
+          stage.addChild(graphics);
+        }
       }
 
       for (var i=0; i < circles.length; i++) {
@@ -285,6 +316,15 @@ document.addEventListener('mousemove', function(e){
     speed = val;
     console.log(speed);
   }
+
+  function toggleVSnap() {
+    vSnap = !vSnap;
+    console.log("vSnap: " + vSnap);
+  }
+
+  function toggleHSnap() {
+    hSnap = !hSnap;
+  }  
 
   //audio
   function startUserMedia(stream) {
