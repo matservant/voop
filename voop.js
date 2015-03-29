@@ -91,7 +91,18 @@ document.addEventListener('mousemove', function(e){
 
               //200 is to avoid overlap of samples, as the stop is not immediate
               //setTimeout(function() {startRecording()}, 200);                          
-              startRecording();                          
+              startRecording();
+
+              //record                                          
+              emptyDot.scale.x = 0.1;
+              emptyDot.scale.y = 0.1;
+              emptyDot.scaleDx = 0.5;
+              emptyDot.scaleDy = 0.5;
+              emptyDot.tint = tints[tintCount%tints.length];
+
+              emptyDot.x = event.x;                          
+              emptyDot.y = event.y;
+              stage.addChild(emptyDot);
             }
             if(debug) {
               console.log("press");
@@ -108,6 +119,7 @@ document.addEventListener('mousemove', function(e){
                 console.log("isrec: " + isRec);
               }
               stopRecording();
+              stage.removeChild(emptyDot);
               var tint = tints[tintCount % tints.length];
               tintCount++;
               var circle = createCircle(event.x, event.y, tint);
@@ -145,13 +157,19 @@ document.addEventListener('mousemove', function(e){
 
   requestAnimFrame( animate );
 
+  //textures
   var circleTexture = PIXI.Texture.fromImage("dot.png");   
+  var emptyTexture = PIXI.Texture.fromImage("emptyDot.png");     
   var hSnapperTxt = PIXI.Texture.fromImage("hSnapperTxt.png");   
   var vSnapperTxt = PIXI.Texture.fromImage("vSnapperTxt.png");   
-
   var timelineTxt = PIXI.Texture.fromImage("timeline.png");
+  
   var timelineTop = new PIXI.Sprite(timelineTxt);
-  var timelineBot = new PIXI.Sprite(timelineTxt);
+  var timelineBot = new PIXI.Sprite(timelineTxt);  
+  var emptyDot = new PIXI.Sprite(emptyTexture);
+
+  emptyDot.anchor.x = 0.5;
+  emptyDot.anchor.y = 0.5;  
   
   timelineTop.anchor.x = 0.5;
   timelineTop.anchor.y = 0;
@@ -178,6 +196,9 @@ document.addEventListener('mousemove', function(e){
         timelineTop.x = 0;
         timelineBot.x = 0;
       }      
+
+      emptyDot.scale.x += (emptyDot.scaleDx - emptyDot.scale.x) * 0.1;
+      emptyDot.scale.y += (emptyDot.scaleDy - emptyDot.scale.y) * 0.1;      
 
       for (var i=0; i < circles.length; i++) {
         var circle = circles[i];

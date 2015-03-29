@@ -73,10 +73,11 @@
 
     #belzebu {
       font-family: 'monosten';
+      font-size: 1.2em;
       color: white;      
       display: inline-block;
       float: right;
-      margin: 30px;
+      margin: 1.4em;      
     }
 
     #delete:before {         
