@@ -13,9 +13,7 @@
   var vSnap = false;
   var hSnap = false;
   var vPortions = 7;
-  var hPortions = 7;  
-  var vSnappers = [];
-  var hSnappers = [];
+  var hPortions = 7;    
   var vSpace, hSpace;               
   var tints = [
     0xFAD089,
@@ -132,7 +130,13 @@ document.addEventListener('mousemove', function(e){
   //pixi
   var stage = new PIXI.Stage(0xFFFFFF);
   var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight - controlsHeight, null);
-  var graphics = new PIXI.Graphics();
+  var vSnappersContainer = new PIXI.DisplayObjectContainer();
+  var hSnappersContainer = new PIXI.DisplayObjectContainer();
+  var circlesContainer = new PIXI.DisplayObjectContainer();
+  
+  stage.addChild(hSnappersContainer)
+  stage.addChild(vSnappersContainer);
+  stage.addChild(circlesContainer);
 
   vSpace = renderer.height / vPortions;
   hSpace = renderer.width / hPortions;
@@ -223,9 +227,7 @@ document.addEventListener('mousemove', function(e){
     circle.position.y = y;    
 
     circle.scale.x = 0.1;
-    circle.scale.y = 0.1;
-
-    circle.z = 2;
+    circle.scale.y = 0.1;    
 
     circle.scaleDx = 0.5;
     circle.scaleDy = 0.5;
@@ -286,15 +288,13 @@ document.addEventListener('mousemove', function(e){
     return circle;
   }
   
-  function pushCircle(circle) {
-    stage.addChild(circle);
+  function pushCircle(circle) {    
+    circlesContainer.addChild(circle);
     circles.push(circle);
   }
 
   function aFreshStart() {
-  	for(var i=0; i<circles.length; i++) {
-  		stage.removeChild(circles[i]);
-  	}  	
+  	circlesContainer.removeChildren();	
   	samples.length = 0;
   	circles.length = 0;
   }
@@ -321,16 +321,11 @@ document.addEventListener('mousemove', function(e){
            vSnapper.anchor.x = 0;
            vSnapper.anchor.y = 0.5;
            vSnapper.position.x = 0;
-           vSnapper.position.y = i;  
-           vSnapper.z = 1;
-          vSnappers.push(vSnapper);
-          stage.addChild(vSnapper);
+           vSnapper.position.y = i;            
+          vSnappersContainer.addChild(vSnapper);
         }
     } else {
-      for(var i=0; i<vSnappers.length; i++) {
-        stage.removeChild(vSnappers[i]);
-      }
-      vSnappers.length = 0;
+      vSnappersContainer.removeChildren();
     }  
   }
 
@@ -343,26 +338,13 @@ document.addEventListener('mousemove', function(e){
            hSnapper.anchor.x = 0.5;
            hSnapper.anchor.y = 0;
            hSnapper.position.x = i;
-           hSnapper.position.y = 0;  
-           hSnapper.z = 1;
-          hSnappers.push(hSnapper);
-          stage.addChild(hSnapper);
+           hSnapper.position.y = 0;             
+          hSnappersContainer.addChild(hSnapper);
         }
     } else {
-      for(var i=0; i<hSnappers.length; i++) {
-        stage.removeChild(hSnappers[i]);
-      }
-      hSnappers.length = 0;
+      hSnappersContainer.removeChildren();
     }
   }  
-
-  function depthCompare(a,b) {
-    if (a.z < b.z)
-       return -1;
-    if (a.z > b.z)
-      return 1;
-    return 0;
-  }
 
   //audio
   function startUserMedia(stream) {
