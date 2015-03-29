@@ -194,6 +194,14 @@ document.addEventListener('mousemove', function(e){
       for (var i=0; i < circles.length; i++) {
         var circle = circles[i];
 
+        if(vSnap) {          
+          circle.y = (Math.round(circle.y / vSpace) * vSpace);          
+        }
+
+        if(hSnap) {          
+          circle.x = (Math.round(circle.x / hSpace) * hSpace);          
+        }
+
         circle.scale.x += (circle.scaleDx - circle.scale.x) * 0.1;
         circle.scale.y += (circle.scaleDy - circle.scale.y) * 0.1;
 
