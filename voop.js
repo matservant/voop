@@ -30,6 +30,14 @@
   var tintCount = Math.floor(Math.random()*tints.length);  
   var mouse = {x: 0, y: 0};
 
+var slider = document.getElementById('timeSlider');
+
+slider.addEventListener('input', function()
+{
+    console.log('input changed to: ', slider.value);
+    setSpeed(parseInt(slider.value));
+});
+
 document.addEventListener('mousemove', function(e){ 
     mouse.x = e.clientX || e.pageX; 
     mouse.y = e.clientY || e.pageY 
@@ -199,9 +207,11 @@ document.addEventListener('mousemove', function(e){
 
       emptyDot.scale.x += (emptyDot.scaleDx - emptyDot.scale.x) * 0.1;
       emptyDot.scale.y += (emptyDot.scaleDy - emptyDot.scale.y) * 0.1;      
+      emptyDot.x = mouse.x;
+      emptyDot.y = mouse.y;
 
       for (var i=0; i < circles.length; i++) {
-        var circle = circles[i];
+        var circle = circles[i];      
 
         if(vSnap) {          
           circle.y = (Math.round(circle.y / vSpace) * vSpace);          
@@ -227,6 +237,8 @@ document.addEventListener('mousemove', function(e){
 
         if(timelineTop.x < (circle.x + halfCircle) && timelineTop.x > (circle.x - halfCircle)) {
           if (isRec == false) {
+            //below 0.5 or above 4 it stops working :(
+            samples[i].playbackRate = 0.5 + (circle.y * 3.5) / renderer.height;        
             samples[i].play();
             circle.bounce();                                    
           }

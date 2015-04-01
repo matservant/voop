@@ -6,16 +6,15 @@
 	<title>Voop</title> 
   <link rel="stylesheet" href="s.css">
 </head>
-<body>
-
-  <!--<input type="range" min="0" max="5" value="5" oninput="setSpeed(	value)" onchange="setSpeed(value)">-->
+<body>  
 
   <div id="controls">  
     <div id="buttons">
   	 <button id="delete" class="untoggle" onclick="aFreshStart()"></button>
      <button id="vertical-snap" class="untoggle" onclick="toggleHSnap()"></button>
-     <button id="horizontal-snap" class="untoggle" onclick="toggleVSnap()"></button>
+     <button id="horizontal-snap" class="untoggle" onclick="toggleVSnap()"></button>     
     </div>  
+    <input id="timeSlider" type="range" min="0" max="80" value="5">
     <div id="belzebu">
       voop by <a href="http://matlo.me">matlo</a>
     </div>
