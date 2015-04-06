@@ -166,11 +166,11 @@ document.addEventListener('mousemove', function(e){
   requestAnimFrame( animate );
 
   //textures
-  var circleTexture = PIXI.Texture.fromImage("dot.png");   
-  var emptyTexture = PIXI.Texture.fromImage("emptyDot.png");     
-  var hSnapperTxt = PIXI.Texture.fromImage("hSnapperTxt.png");   
-  var vSnapperTxt = PIXI.Texture.fromImage("vSnapperTxt.png");   
-  var timelineTxt = PIXI.Texture.fromImage("timeline.png");
+  var circleTexture = PIXI.Texture.fromImage("i/dot.png");   
+  var emptyTexture = PIXI.Texture.fromImage("i/emptyDot.png");     
+  var hSnapperTxt = PIXI.Texture.fromImage("i/hSnapperTxt.png");   
+  var vSnapperTxt = PIXI.Texture.fromImage("i/vSnapperTxt.png");   
+  var timelineTxt = PIXI.Texture.fromImage("i/timeline.png");
   
   var timelineTop = new PIXI.Sprite(timelineTxt);
   var timelineBot = new PIXI.Sprite(timelineTxt);  
