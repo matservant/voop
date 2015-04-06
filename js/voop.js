@@ -1,5 +1,5 @@
-  //DON'T USE GRAPHICS FOR LINES BUT TEXTURES
 
+  
   var debug = false;
   var audio_context;
   var recorder;
@@ -29,8 +29,21 @@
   //start with a random tint
   var tintCount = Math.floor(Math.random()*tints.length);  
   var mouse = {x: 0, y: 0};
+  var chromeMessage = '<div id="chrome-message">Voop runs only on Google Chrome at the moment, we are working on porting it in other browsers, if you want to contribute <a href="http://github.com/mat-lo/voop"> check the GitHub page</a></div>';
 
 var slider = document.getElementById('timeSlider');
+
+//chrome check
+var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+
+if (isChrome) {
+    //cool
+    run();
+  } else {
+    document.body.innerHTML = chromeMessage;
+  }
+
+function run() {
 
 slider.addEventListener('input', function()
 {
@@ -163,7 +176,9 @@ document.addEventListener('mousemove', function(e){
   
   document.body.appendChild(renderer.view);
 
+
   requestAnimFrame( animate );
+
 
   //textures
   var circleTexture = PIXI.Texture.fromImage("i/dot.png");   
@@ -447,8 +462,8 @@ document.addEventListener('mousemove', function(e){
   window.onload = function init() {
     try {
       // webkit shim
-      window.AudioContext = window.AudioContext || window.webkitAudioContext;
-      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+      window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
       window.URL = window.URL || window.webkitURL;
       
       audio_context = new AudioContext;      
@@ -462,3 +477,4 @@ document.addEventListener('mousemove', function(e){
       console.log('No live audio input: ' + e);
     });
   };
+}

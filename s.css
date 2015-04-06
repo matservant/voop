@@ -137,3 +137,11 @@
     #horizontal-snap:before {         
       content: "\e602";
     }
+
+    #chrome-message {
+      font-family: 'monosten';
+      width: 50%;
+      margin: 5em auto;
+      font-size:1.8em;
+      line-height: 2em;
+    }
