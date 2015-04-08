@@ -36,14 +36,12 @@ var slider = document.getElementById('timeSlider');
 //chrome check
 var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
-if (isChrome) {
+/*if (isChrome) {
     //cool
     run();
   } else {
     document.body.innerHTML = chromeMessage;
-  }
-
-function run() {
+  }*/
 
 slider.addEventListener('input', function()
 {
@@ -358,45 +356,7 @@ document.addEventListener('mousemove', function(e){
   function setSpeed(val) {
     speed = val;
     console.log(speed);
-  }
-
-  function toggleVSnap() {
-    vSnap = !vSnap;  
-    document.getElementById('horizontal-snap').classList.toggle('untoggle');
-    document.getElementById('horizontal-snap').classList.toggle('toggle');
-    
-    if(vSnap) {               
-        for(var i=0; i<renderer.height; i+=vSpace) {
-          var vSnapper = new PIXI.TilingSprite(vSnapperTxt, renderer.width, 1);
-           vSnapper.anchor.x = 0;
-           vSnapper.anchor.y = 0.5;
-           vSnapper.position.x = 0;
-           vSnapper.position.y = i;            
-          vSnappersContainer.addChild(vSnapper);
-        }
-    } else {
-      vSnappersContainer.removeChildren();
-    }  
-  }
-
-  function toggleHSnap() {
-    hSnap = !hSnap;
-    document.getElementById('vertical-snap').classList.toggle('untoggle');
-    document.getElementById('vertical-snap').classList.toggle('toggle');
-
-    if(hSnap) {               
-        for(var i=0; i<renderer.width; i+=hSpace) {
-          var hSnapper = new PIXI.TilingSprite(hSnapperTxt, 1, renderer.height);
-           hSnapper.anchor.x = 0.5;
-           hSnapper.anchor.y = 0;
-           hSnapper.position.x = i;
-           hSnapper.position.y = 0;             
-          hSnappersContainer.addChild(hSnapper);
-        }
-    } else {
-      hSnappersContainer.removeChildren();
-    }
-  }  
+  } 
 
   //audio
   function startUserMedia(stream) {
@@ -477,4 +437,41 @@ document.addEventListener('mousemove', function(e){
       console.log('No live audio input: ' + e);
     });
   };
-}
+
+  function toggleVSnap() {
+    vSnap = !vSnap;  
+    document.getElementById('horizontal-snap').classList.toggle('untoggle');
+    document.getElementById('horizontal-snap').classList.toggle('toggle');
+    
+    if(vSnap) {               
+        for(var i=0; i<renderer.height; i+=vSpace) {
+          var vSnapper = new PIXI.TilingSprite(vSnapperTxt, renderer.width, 1);
+           vSnapper.anchor.x = 0;
+           vSnapper.anchor.y = 0.5;
+           vSnapper.position.x = 0;
+           vSnapper.position.y = i;            
+          vSnappersContainer.addChild(vSnapper);
+        }
+    } else {
+      vSnappersContainer.removeChildren();
+    }  
+  }
+
+  function toggleHSnap() {
+    hSnap = !hSnap;
+    document.getElementById('vertical-snap').classList.toggle('untoggle');
+    document.getElementById('vertical-snap').classList.toggle('toggle');
+
+    if(hSnap) {               
+        for(var i=0; i<renderer.width; i+=hSpace) {
+          var hSnapper = new PIXI.TilingSprite(hSnapperTxt, 1, renderer.height);
+           hSnapper.anchor.x = 0.5;
+           hSnapper.anchor.y = 0;
+           hSnapper.position.x = i;
+           hSnapper.position.y = 0;             
+          hSnappersContainer.addChild(hSnapper);
+        }
+    } else {
+      hSnappersContainer.removeChildren();
+    }
+  } 
